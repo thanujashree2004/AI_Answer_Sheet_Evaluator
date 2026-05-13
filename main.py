@@ -23,7 +23,8 @@ with open(
 
     reference_answer = file.read()
 
-reference_answer = reference_answer.lower()
+# Clean reference answer
+reference_answer = clean_text(reference_answer)
 
 print("\n==============================")
 print("ANSWER KEY")
@@ -79,21 +80,10 @@ print("==============================")
 print(ocr_text)
 
 # =========================================================
-# TEXT CLEANING
-# =========================================================
-
-cleaned_text = clean_text(ocr_text)
-
-print("\n==============================")
-print("CLEANED TEXT")
-print("==============================")
-print(cleaned_text)
-
-# =========================================================
 # SPELL CORRECTION
 # =========================================================
 
-corrected_text = correct_spelling(cleaned_text)
+corrected_text = correct_spelling(ocr_text)
 
 print("\n==============================")
 print("SPELL CORRECTED TEXT")
@@ -101,11 +91,22 @@ print("==============================")
 print(corrected_text)
 
 # =========================================================
+# TEXT CLEANING
+# =========================================================
+
+cleaned_text = clean_text(corrected_text)
+
+print("\n==============================")
+print("CLEANED TEXT")
+print("==============================")
+print(cleaned_text)
+
+# =========================================================
 # SIMILARITY ANALYSIS
 # =========================================================
 
 average_score = calculate_similarity(
-    corrected_text,
+    cleaned_text,
     reference_answer
 )
 

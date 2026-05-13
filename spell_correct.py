@@ -1,26 +1,44 @@
-from spellchecker import SpellChecker
+# =========================================================
+# CONTEXTUAL SPELL CORRECTION USING T5
+# =========================================================
 
-spell = SpellChecker()
+from transformers import AutoTokenizer
+from transformers import AutoModelForSeq2SeqLM
+
+# Load tokenizer and model
+tokenizer = AutoTokenizer.from_pretrained(
+    "vennify/t5-base-grammar-correction"
+)
+
+model = AutoModelForSeq2SeqLM.from_pretrained(
+    "vennify/t5-base-grammar-correction"
+)
+
+# =========================================================
+# SPELL CORRECTION FUNCTION
+# =========================================================
 
 def correct_spelling(text):
 
-    words = text.split()
+    input_text = "grammar: " + text
 
-    corrected_words = []
+    input_ids = tokenizer.encode(
+        input_text,
+        return_tensors="pt",
+        max_length=256,
+        truncation=True
+    )
 
-    for word in words:
+    outputs = model.generate(
+        input_ids,
+        max_length=256,
+        num_beams=4,
+        early_stopping=True
+    )
 
-        if len(word) <= 2:
-            corrected_words.append(word)
-            continue
-
-        corrected = spell.correction(word)
-
-        if corrected is None:
-            corrected = word
-
-        corrected_words.append(corrected)
-
-    corrected_text = " ".join(corrected_words)
+    corrected_text = tokenizer.decode(
+        outputs[0],
+        skip_special_tokens=True
+    )
 
     return corrected_text
