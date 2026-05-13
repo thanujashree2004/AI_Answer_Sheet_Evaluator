@@ -1,5 +1,1 @@
-Data redundancy means duplicate data stored in multiple places.
-
-Redundancy increases storage usage and may cause data inconsistency.
-
-Database normalization helps reduce redundancy and improves data integrity.
+The Earth revolves around the Sun.
