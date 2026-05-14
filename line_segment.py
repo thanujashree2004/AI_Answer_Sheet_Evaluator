@@ -3,16 +3,29 @@ import os
 
 def segment_lines(image_path):
 
-    # Read image
+    # ============================================
+    # READ IMAGE
+    # ============================================
+
     image = cv2.imread(image_path)
 
-    # Convert to grayscale
+    if image is None:
+        print("ERROR: Unable to read image.")
+        return []
+
+    # ============================================
+    # CONVERT TO GRAYSCALE
+    # ============================================
+
     gray = cv2.cvtColor(
         image,
         cv2.COLOR_BGR2GRAY
     )
 
-    # Binary inverse threshold
+    # ============================================
+    # BINARY INVERSE THRESHOLD
+    # ============================================
+
     thresh = cv2.threshold(
         gray,
         150,
@@ -21,18 +34,19 @@ def segment_lines(image_path):
     )[1]
 
     # ============================================
-    # MERGE WORDS INTO LINES
+    # STRONGER WORD MERGING
+    # FIXES FRAGMENTED LINE DETECTION
     # ============================================
 
     kernel = cv2.getStructuringElement(
         cv2.MORPH_RECT,
-        (100, 5)
+        (180, 12)
     )
 
     dilated = cv2.dilate(
         thresh,
         kernel,
-        iterations=1
+        iterations=3
     )
 
     # ============================================
@@ -56,7 +70,10 @@ def segment_lines(image_path):
         exist_ok=True
     )
 
-    # Delete old files
+    # ============================================
+    # DELETE OLD FILES
+    # ============================================
+
     for file in os.listdir(output_folder):
 
         file_path = os.path.join(
@@ -68,7 +85,7 @@ def segment_lines(image_path):
             os.remove(file_path)
 
     # ============================================
-    # STORE BOXES
+    # STORE VALID BOXES
     # ============================================
 
     boxes = []
@@ -77,30 +94,107 @@ def segment_lines(image_path):
 
         x, y, w, h = cv2.boundingRect(contour)
 
-        # Ignore tiny regions
-        if w > 200 and h > 20:
+        # Ignore tiny noise regions
+
+        if w > 300 and h > 30:
+
             boxes.append((x, y, w, h))
 
-    # Sort top-to-bottom
-    boxes = sorted(
+    # ============================================
+    # SMART LINE ORDERING
+    # ============================================
+
+    # First sort top-to-bottom
+    sorted_boxes = sorted(
         boxes,
         key=lambda b: b[1]
     )
 
+    grouped_lines = []
+
+    # Same-line threshold
+    threshold = 50
+
+    for box in sorted_boxes:
+
+        x, y, w, h = box
+
+        added = False
+
+        # ----------------------------------------
+        # CHECK EXISTING GROUPS
+        # ----------------------------------------
+
+        for group in grouped_lines:
+
+            _, gy, _, gh = group[0]
+
+            # Same line detection
+
+            if abs(y - gy) < threshold:
+
+                group.append(box)
+
+                added = True
+
+                break
+
+        # ----------------------------------------
+        # CREATE NEW GROUP
+        # ----------------------------------------
+
+        if not added:
+
+            grouped_lines.append([box])
+
+    # ============================================
+    # SORT LEFT TO RIGHT INSIDE EACH GROUP
+    # ============================================
+
+    final_boxes = []
+
+    for group in grouped_lines:
+
+        group = sorted(
+            group,
+            key=lambda b: b[0]
+        )
+
+        final_boxes.extend(group)
+
+    boxes = final_boxes
+
     line_images = []
 
     # ============================================
-    # SAVE LINES
+    # SAVE SEGMENTED LINES
     # ============================================
 
     for idx, (x, y, w, h) in enumerate(boxes):
 
-        # Add padding
-        padding = 10
+        # Padding
+
+        padding_x = 20
+        padding_y = 15
+
+        x1 = max(x - padding_x, 0)
+        y1 = max(y - padding_y, 0)
+
+        x2 = min(
+            x + w + padding_x,
+            image.shape[1]
+        )
+
+        y2 = min(
+            y + h + padding_y,
+            image.shape[0]
+        )
+
+        # Crop line
 
         line = image[
-            max(y-padding, 0):min(y+h+padding, image.shape[0]),
-            max(x-padding, 0):min(x+w+padding, image.shape[1])
+            y1:y2,
+            x1:x2
         ]
 
         line_path = (
@@ -112,5 +206,19 @@ def segment_lines(image_path):
         line_images.append(line_path)
 
         print(f"Saved: {line_path}")
+
+        print(
+            f"Line {idx+1} -> "
+            f"x:{x}, y:{y}, w:{w}, h:{h}"
+        )
+
+    # ============================================
+    # FINAL STATUS
+    # ============================================
+
+    print(
+        f"\nTotal Valid Lines Segmented: "
+        f"{len(line_images)}"
+    )
 
     return line_images
