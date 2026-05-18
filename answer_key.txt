@@ -1,1 +1,14 @@
-The Earth revolves around the Sun.
+PART A — 2 × 3 = 6
+
+1. The earth revolves around the sun
+
+2. Artificial Intelligence simulates human intelligence
+
+3. DBMS is used to store and manage data
+
+
+PART B — 3 × 2 = 6
+
+4. Machine Learning is a subset of Artificial Intelligence that enables systems to learn from data and improve automatically without explicit programming.
+
+5. Cloud Computing provides computing services such as storage, servers, databases, networking, and software over the internet.
