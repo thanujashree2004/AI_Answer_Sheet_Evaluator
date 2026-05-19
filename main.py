@@ -11,6 +11,13 @@ from clean_text import clean_text
 from spell_correct import correct_spelling
 from evaluation import evaluate_answer
 
+from utils.text_classifier import (
+    is_meaningful_answer,
+    is_strike_text
+)
+
+
+
 
 # =========================================================
 # LOAD ANSWER KEY
@@ -91,11 +98,35 @@ print(ocr_text)
 
 
 # =========================================================
+# INTELLIGENT ANSWER FILTERING
+# =========================================================
+
+filtered_lines = []
+
+for line in ocr_text.split("\n"):
+
+    if (
+        is_meaningful_answer(line)
+        and not is_strike_text(line)
+    ):
+
+        filtered_lines.append(line)
+
+filtered_text = "\n".join(filtered_lines)
+
+print("\n==============================")
+print("FILTERED ANSWER TEXT")
+print("==============================")
+print(filtered_text)
+
+
+
+# =========================================================
 # SPELL CORRECTION
 # =========================================================
 
 corrected_text = correct_spelling(
-    ocr_text
+    filtered_text
 )
 
 print("\n==============================")

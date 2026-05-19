@@ -478,7 +478,7 @@ def evaluate_answer(student_answer):
     print("==============================")
 
     print(
-        f"Total Marks : {total_marks:.1f}"
+        f"Total Marks : {total_marks:.2f}"
     )
 
 
