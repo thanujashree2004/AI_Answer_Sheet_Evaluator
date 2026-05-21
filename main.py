@@ -16,6 +16,14 @@ from utils.text_classifier import (
     is_strike_text
 )
 
+# =========================================================
+# QUESTION DETECTOR IMPORT
+# =========================================================
+
+from utils.question_detector import (
+    detect_question_numbers,
+    find_missing_questions
+)
 
 
 
@@ -95,6 +103,39 @@ print("\n==============================")
 print("RAW OCR TEXT")
 print("==============================")
 print(ocr_text)
+
+
+# =========================================================
+# QUESTION NUMBER DETECTION
+# =========================================================
+
+detected_questions = detect_question_numbers(
+    ocr_text
+)
+
+print("\n==============================")
+print("DETECTED QUESTION NUMBERS")
+print("==============================")
+print(detected_questions)
+
+
+# =========================================================
+# FIND MISSING QUESTIONS
+# =========================================================
+
+missing_questions = find_missing_questions(
+    detected_questions
+)
+
+print("\n==============================")
+print("MISSING QUESTIONS")
+print("==============================")
+
+if missing_questions:
+    print(missing_questions)
+
+else:
+    print("No Missing Questions")
 
 
 # =========================================================

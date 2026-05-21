@@ -2,27 +2,100 @@ import re
 
 
 # =========================================================
-# NORMALIZE OCR QUESTION NUMBER ERRORS
+# SMART OCR NORMALIZATION
 # =========================================================
 
 def normalize_ocr_question_line(line):
 
     line = line.strip()
 
-    # OCR sometimes reads:
-    # 1 -> I
-    # only fix at question-number position
+    # =====================================================
+    # REMOVE UNWANTED OCR SYMBOLS
+    # =====================================================
+
     line = re.sub(
-        r'^I\s*[\.\)]',
+        r'^["\'`]+',
+        '',
+        line
+    )
+
+    # =====================================================
+    # FIX SPACED OCR QUESTION NUMBER ERRORS
+    # =====================================================
+
+    # I . -> 1.
+    line = re.sub(
+        r'^\s*I\s*\.',
         '1.',
         line
     )
 
-    return line
+    # l . -> 1.
+    line = re.sub(
+        r'^\s*l\s*\.',
+        '1.',
+        line
+    )
+
+    # I ) -> 1)
+    line = re.sub(
+        r'^\s*I\s*\)',
+        '1)',
+        line
+    )
+
+    # l ) -> 1)
+    line = re.sub(
+        r'^\s*l\s*\)',
+        '1)',
+        line
+    )
+
+    # =====================================================
+    # AUTO-CORRECT COMMON OCR CONFUSIONS
+    # ONLY AT QUESTION NUMBER POSITION
+    # =====================================================
+
+    tokens = line.split()
+
+    if not tokens:
+        return line
+
+    first_token = tokens[0]
+
+    # =====================================================
+    # OCR CONFUSION MAP
+    # =====================================================
+
+    confusion_map = {
+        'I': '1',
+        'l': '1',
+        '|': '1',
+        'O': '0',
+        'o': '0',
+        'S': '5'
+    }
+
+    corrected_token = ""
+
+    for char in first_token:
+
+        if char in confusion_map:
+            corrected_token += confusion_map[char]
+
+        else:
+            corrected_token += char
+
+    # Replace only first token
+    tokens[0] = corrected_token
+
+    corrected_line = " ".join(tokens)
+
+    return corrected_line
 
 
 # =========================================================
-# DETECT QUESTION NUMBERS FROM OCR TEXT
+# DETECT QUESTION NUMBERS
 # =========================================================
 
 def detect_question_numbers(text):
@@ -33,37 +106,53 @@ def detect_question_numbers(text):
 
     for line in lines:
 
-        # OCR normalization
-        line = normalize_ocr_question_line(
-            line
-        )
+        # =================================================
+        # SMART NORMALIZATION
+        # =================================================
 
-        # OCR-tolerant question detection
-        # Supports:
-        # 1.
-        # 1 .
-        # 1)
-        # 1 )
-        match = re.match(
-            r'^\s*(\d+)\s*[\.\)]',
-            line
-        )
+        line = normalize_ocr_question_line(line)
 
-        if match:
+        # =================================================
+        # FLEXIBLE QUESTION DETECTION
+        # =================================================
 
-            question_num = int(
-                match.group(1)
+        patterns = [
+
+            # Q1 / Q.1
+            r'^\s*Q\s*\.?\s*(\d+)',
+
+            # Question 1
+            r'^\s*Question\s*(\d+)',
+
+            # 1. / 1)
+            r'^\s*(\d+)\s*[\.\)]'
+        ]
+
+        for pattern in patterns:
+
+            match = re.match(
+                pattern,
+                line,
+                re.IGNORECASE
             )
 
-            detected_questions.append(
-                question_num
-            )
+            if match:
+
+                question_num = int(
+                    match.group(1)
+                )
+
+                detected_questions.append(
+                    question_num
+                )
+
+                break
 
     return detected_questions
 
 
 # =========================================================
-# FIND MISSING QUESTION NUMBERS
+# FIND MISSING QUESTIONS
 # =========================================================
 
 def find_missing_questions(question_numbers):
