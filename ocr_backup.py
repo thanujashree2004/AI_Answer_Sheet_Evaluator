@@ -6,8 +6,6 @@ from transformers import (
 from PIL import Image
 import torch
 import os
-import cv2
-import numpy as np
 
 # ============================================
 # LOAD TrOCR MODEL
@@ -34,75 +32,14 @@ model.to(device)
 print("TrOCR Loaded Successfully!")
 
 # ============================================
-# IMAGE PREPROCESSING
-# ============================================
-
-def preprocess_image(image_path):
-
-    # Read image using OpenCV
-    img = cv2.imread(image_path)
-
-    # Convert to grayscale
-    gray = cv2.cvtColor(
-        img,
-        cv2.COLOR_BGR2GRAY
-    )
-
-    # Remove noise
-    denoise = cv2.fastNlMeansDenoising(
-        gray
-    )
-
-    # Improve contrast
-    thresh = cv2.adaptiveThreshold(
-        denoise,
-        255,
-        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-        cv2.THRESH_BINARY,
-        11,
-        2
-    )
-
-    # Convert back to RGB
-    processed = cv2.cvtColor(
-        thresh,
-        cv2.COLOR_GRAY2RGB
-    )
-
-    # ============================================
-    # RESIZE IMAGE FOR BETTER TrOCR READING
-    # ============================================
-
-    height, width = processed.shape[:2]
-
-    new_width = 1024
-
-    new_height = int(
-        (new_width / width) * height
-    )
-
-    processed = cv2.resize(
-        processed,
-        (new_width, new_height)
-    )
-
-    return processed
-
-# ============================================
 # OCR FUNCTION
 # ============================================
 
 def extract_text_from_line(image_path):
 
-    # Apply preprocessing
-    processed_image = preprocess_image(
+    image = Image.open(
         image_path
-    )
-
-    # Convert OpenCV image to PIL image
-    image = Image.fromarray(
-        processed_image
-    )
+    ).convert("RGB")
 
     pixel_values = processor(
         image,
@@ -131,10 +68,7 @@ def extract_text(folder_path):
 
     # Get all segmented line images
     files = sorted(
-        os.listdir(folder_path),
-        key=lambda x: int(
-            x.split("_")[1].split(".")[0]
-        )
+        os.listdir(folder_path)
     )
 
     for file in files:

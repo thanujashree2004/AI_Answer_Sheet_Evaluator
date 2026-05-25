@@ -34,19 +34,19 @@ def segment_lines(image_path):
     )[1]
 
     # ============================================
-    # IMPROVED WORD MERGING
-    # PREVENTS MULTI-LINE MERGING
+    # STRONGER WORD MERGING
+    # FIXES FRAGMENTED LINE DETECTION
     # ============================================
 
     kernel = cv2.getStructuringElement(
         cv2.MORPH_RECT,
-        (100, 4)
+        (180, 12)
     )
 
     dilated = cv2.dilate(
         thresh,
         kernel,
-        iterations=1
+        iterations=3
     )
 
     # ============================================
@@ -96,7 +96,7 @@ def segment_lines(image_path):
 
         # Ignore tiny noise regions
 
-        if w > 180 and h > 25:
+        if w > 300 and h > 30:
 
             boxes.append((x, y, w, h))
 
