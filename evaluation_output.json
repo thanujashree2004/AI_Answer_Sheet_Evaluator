@@ -1,0 +1,18 @@
+{
+    "date": "2026-05-29 12:51:44.365493",
+    "detected_questions": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+    ],
+    "missing_questions": [],
+    "raw_ocr_text": "parta -2 x.6.\n\" The earth revolves around sun .\n2 . AT simulates human intelligence .\n3 . DBMS manages data .\nPART B-3X256\n4 . Machine Learning allows systems to earn\nfrom data automatically .\n5 . Cloud computing Provides online storage\nand internet services .\n6 . Neural Networks are Inspired by the\nhuman brain .\n7 . Data mining is the parts of disceasing .\n2 patterns .\n8 . Cyber security pilots systems , networks and\nprograms from digital attacks .",
+    "filtered_text": "\" The earth revolves around sun .\n2 . AT simulates human intelligence .\n3 . DBMS manages data .\n4 . Machine Learning allows systems to earn\nfrom data automatically .\n5 . Cloud computing Provides online storage\nand internet services .\n6 . Neural Networks are Inspired by the\nhuman brain .\n7 . Data mining is the parts of disceasing .\n8 . Cyber security pilots systems , networks and\nprograms from digital attacks .",
+    "corrected_text": "1. \" The earth revolves around the sun . 2. AT simulates human intelligence . 3. DBMS manages data . 4. Machine Learning allows systems to earn from data automatically . 5. Cloud computing Provides online storage and internet services . 6. Neural Networks are inspired by the human brain . 7. Data mining is the part of disceasing . 8. Cyber security pilots systems , networks and programs from digital attacks.",
+    "cleaned_text": "1. the earth revolves around the sun . 2. at simulates human intelligence . 3. dbms manages data . 4. machine learning allows systems to earn from data automatically . 5. cloud computing provides online storage and internet services . 6. neural networks are inspired by the human brain . 7. data mining is the part of disceasing . 8. cyber security pilots systems networks and programs from digital attacks.",
+    "total_marks": 16.0
+}

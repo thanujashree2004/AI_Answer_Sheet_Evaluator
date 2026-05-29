@@ -1,4 +1,4 @@
-from utils.question_detector import (
+from backend.utils.question_detector import (
     detect_question_numbers
 )
 

@@ -5,23 +5,23 @@
 # MULTI PAGE PDF SUPPORT
 # =========================================================
 
-from preprocess import preprocess_image
-from line_segment import segment_lines
-from ocr_module import extract_text
-from clean_text import clean_text
-from spell_correct import correct_spelling
-from evaluation import evaluate_answer
-from pdf_module import convert_pdf_to_images
+from backend.preprocess import preprocess_image
+from backend.line_segment import segment_lines
+from backend.ocr_module import extract_text
+from backend.clean_text import clean_text
+from backend.spell_correct import correct_spelling
+from backend.evaluation import evaluate_answer
+from backend.pdf_module import convert_pdf_to_images
 
 # =========================================================
 # UTILITY IMPORTS
 # =========================================================
 
-from utils.cleanup import clear_old_files
-from utils.json_saver import save_output_json
-from utils.exception_handler import handle_exception
+from backend.utils.cleanup import clear_old_files
+from backend.utils.json_saver import save_output_json
+from backend.utils.exception_handler import handle_exception
 
-from utils.text_classifier import (
+from backend.utils.text_classifier import (
     is_meaningful_answer,
     is_strike_text
 )
@@ -30,7 +30,7 @@ from utils.text_classifier import (
 # QUESTION DETECTOR IMPORT
 # =========================================================
 
-from utils.question_detector import (
+from backend.utils.question_detector import (
     detect_question_numbers,
     find_missing_questions
 )

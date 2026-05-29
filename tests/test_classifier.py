@@ -1,4 +1,4 @@
-from utils.text_classifier import is_meaningful_answer
+from backend.utils.text_classifier import is_meaningful_answer
 
 samples = [
     "PART A",

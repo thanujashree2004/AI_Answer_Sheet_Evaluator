@@ -1,4 +1,4 @@
-from utils.text_classifier import is_strike_text
+from backend.utils.text_classifier import is_strike_text
 
 samples = [
 

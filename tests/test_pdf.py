@@ -1,4 +1,4 @@
-from pdf_module import convert_pdf_to_images
+from backend.pdf_module import convert_pdf_to_images
 
 pdf_path = "student_answer.pdf"
 

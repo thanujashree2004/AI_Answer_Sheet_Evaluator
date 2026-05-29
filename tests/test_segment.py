@@ -1,5 +1,5 @@
-from preprocess import preprocess_image
-from line_segment import segment_lines
+from backend.preprocess import preprocess_image
+from backend.line_segment import segment_lines
 
 # Original image
 original_image = "images/student_answer.jpg"

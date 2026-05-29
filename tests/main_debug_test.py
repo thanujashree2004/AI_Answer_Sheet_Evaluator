@@ -2,12 +2,12 @@
 # MAIN AI ANSWER SHEET EVALUATION SYSTEM (DEBUG VERSION)
 # =========================================================
 
-from preprocess import preprocess_image
-from line_segment import segment_lines
-from ocr_module import extract_text
-from clean_text import clean_text
-from spell_correct import correct_spelling
-from evaluation import evaluate_answer
+from backend.preprocess import preprocess_image
+from backend.line_segment import segment_lines
+from backend.ocr_module import extract_text
+from backend.clean_text import clean_text
+from backend.spell_correct import correct_spelling
+from backend.evaluation import evaluate_answer
 
 
 # =========================================================
