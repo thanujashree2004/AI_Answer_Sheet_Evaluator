@@ -1,0 +1,15 @@
+easyocr
+transformers
+torch
+torchvision
+torchaudio
+sentence-transformers
+opencv-python
+numpy
+pillow
+spacy
+nltk
+pdf2image
+PyMuPDF
+pyspellchecker
+scikit-learn
