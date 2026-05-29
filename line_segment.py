@@ -1,7 +1,10 @@
 import cv2
 import os
 
-def segment_lines(image_path):
+def segment_lines(
+    image_path,
+    page_number
+):
 
     # ============================================
     # READ IMAGE
@@ -60,10 +63,12 @@ def segment_lines(image_path):
     )
 
     # ============================================
-    # OUTPUT FOLDER
+    # PAGE-WISE OUTPUT FOLDER
     # ============================================
 
-    output_folder = "segmented_lines"
+    output_folder = (
+        f"segmented_lines/page_{page_number}"
+    )
 
     os.makedirs(
         output_folder,
@@ -71,7 +76,7 @@ def segment_lines(image_path):
     )
 
     # ============================================
-    # DELETE OLD FILES
+    # DELETE OLD FILES INSIDE PAGE FOLDER
     # ============================================
 
     for file in os.listdir(output_folder):
@@ -82,6 +87,7 @@ def segment_lines(image_path):
         )
 
         if os.path.isfile(file_path):
+
             os.remove(file_path)
 
     # ============================================
@@ -105,6 +111,7 @@ def segment_lines(image_path):
     # ============================================
 
     # First sort top-to-bottom
+
     sorted_boxes = sorted(
         boxes,
         key=lambda b: b[1]
@@ -113,6 +120,7 @@ def segment_lines(image_path):
     grouped_lines = []
 
     # Same-line threshold
+
     threshold = 50
 
     for box in sorted_boxes:
