@@ -139,7 +139,7 @@ def extract_text(folder_path):
 
     for file in files:
 
-        if file.endswith(".jpg"):
+        if file.lower().endswith((".jpg", ".jpeg", ".png")):
 
             line_path = os.path.join(
                 folder_path,

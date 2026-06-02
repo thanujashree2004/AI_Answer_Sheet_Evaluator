@@ -1,0 +1,6 @@
+OCR Evaluation Report
+=====================
+Samples Tested: 10
+Raw OCR Accuracy: 77.86%
+After Cleaning Accuracy: 50.41%
+Improvement: -27.45%
