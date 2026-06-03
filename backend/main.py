@@ -35,250 +35,262 @@ from backend.utils.question_detector import (
     find_missing_questions
 )
 
+
 # =========================================================
-# MAIN EXECUTION
+# MAIN EXECUTION FUNCTION
 # =========================================================
 
-try:
+def run_evaluation(pdf_path):
 
-    # =====================================================
-    # CLEAR OLD GENERATED FILES
-    # =====================================================
+    try:
 
-    clear_old_files()
+        # =====================================================
+        # CLEAR OLD GENERATED FILES
+        # =====================================================
 
-    # =====================================================
-    # LOAD ANSWER KEY
-    # =====================================================
+        clear_old_files()
 
-    with open(
-        "answer_key.txt",
-        "r",
-        encoding="utf-8"
-    ) as file:
+        # =====================================================
+        # LOAD ANSWER KEY
+        # =====================================================
 
-        reference_answer = file.read()
+        with open(
+            "answer_key.txt",
+            "r",
+            encoding="utf-8"
+        ) as file:
 
-    # Clean reference answer
+            reference_answer = file.read()
 
-    reference_answer = clean_text(
-        reference_answer
-    )
-
-    print("\n==============================")
-    print("ANSWER KEY")
-    print("==============================")
-    print(reference_answer)
-
-    # =====================================================
-    # PDF INPUT
-    # =====================================================
-
-    pdf_path = "student_answer.pdf"
-
-    page_images = convert_pdf_to_images(
-        pdf_path
-    )
-
-    # =====================================================
-    # MULTI PAGE PDF PROCESSING
-    # =====================================================
-
-    all_ocr_text = []
-
-    for index, image_path in enumerate(page_images):
-
-        print("\n==============================")
-        print(f"PROCESSING PAGE {index + 1}")
-        print("==============================")
-
-        processed_image = (
-            f"images/processed_{index + 1}.jpg"
-        )
-
-        # =================================================
-        # IMAGE PREPROCESSING
-        # =================================================
-
-        print("\n==============================")
-        print("IMAGE PREPROCESSING")
-        print("==============================")
-
-        preprocess_image(
-            image_path,
-            processed_image
-        )
-
-        # =================================================
-        # LINE SEGMENTATION
-        # =================================================
-
-        print("\n==============================")
-        print("LINE SEGMENTATION")
-        print("==============================")
-
-        segment_lines(
-            processed_image,
-            index + 1
-        )
-
-        # =================================================
-        # OCR EXTRACTION USING TrOCR
-        # =================================================
-
-        print("\n==============================")
-        print("READING SEGMENTED LINES")
-        print("==============================")
-
-        page_text = extract_text(
-            f"segmented_lines/page_{index + 1}"
+        reference_answer = clean_text(
+            reference_answer
         )
 
         print("\n==============================")
-        print("PAGE OCR TEXT")
+        print("ANSWER KEY")
         print("==============================")
-        print(page_text)
+        print(reference_answer)
 
-        all_ocr_text.append(page_text)
+        # =====================================================
+        # PDF INPUT
+        # =====================================================
 
-    # =====================================================
-    # COMBINED OCR TEXT
-    # =====================================================
+        page_images = convert_pdf_to_images(
+            pdf_path
+        )
 
-    ocr_text = "\n".join(all_ocr_text)
+        # =====================================================
+        # MULTI PAGE PDF PROCESSING
+        # =====================================================
 
-    print("\n==============================")
-    print("RAW OCR TEXT")
-    print("==============================")
-    print(ocr_text)
+        all_ocr_text = []
 
-    # =====================================================
-    # QUESTION NUMBER DETECTION
-    # =====================================================
+        for index, image_path in enumerate(page_images):
 
-    detected_questions = detect_question_numbers(
-        ocr_text
-    )
+            print("\n==============================")
+            print(f"PROCESSING PAGE {index + 1}")
+            print("==============================")
 
-    print("\n==============================")
-    print("DETECTED QUESTION NUMBERS")
-    print("==============================")
-    print(detected_questions)
+            processed_image = (
+                f"images/processed_{index + 1}.jpg"
+            )
 
-    # =====================================================
-    # FIND MISSING QUESTIONS
-    # =====================================================
+            # =================================================
+            # IMAGE PREPROCESSING
+            # =================================================
 
-    missing_questions = find_missing_questions(
-        detected_questions
-    )
+            print("\n==============================")
+            print("IMAGE PREPROCESSING")
+            print("==============================")
 
-    print("\n==============================")
-    print("MISSING QUESTIONS")
-    print("==============================")
+            preprocess_image(
+                image_path,
+                processed_image
+            )
 
-    if missing_questions:
+            # =================================================
+            # LINE SEGMENTATION
+            # =================================================
 
-        print(missing_questions)
+            print("\n==============================")
+            print("LINE SEGMENTATION")
+            print("==============================")
 
-    else:
+            segment_lines(
+                processed_image,
+                index + 1
+            )
 
-        print("No Missing Questions")
+            # =================================================
+            # OCR EXTRACTION USING TrOCR
+            # =================================================
 
-    # =====================================================
-    # INTELLIGENT ANSWER FILTERING
-    # =====================================================
+            print("\n==============================")
+            print("READING SEGMENTED LINES")
+            print("==============================")
 
-    filtered_lines = []
+            page_text = extract_text(
+                f"segmented_lines/page_{index + 1}"
+            )
 
-    for line in ocr_text.split("\n"):
+            print("\n==============================")
+            print("PAGE OCR TEXT")
+            print("==============================")
+            print(page_text)
 
-        if (
-            is_meaningful_answer(line)
-            and not is_strike_text(line)
-        ):
+            all_ocr_text.append(page_text)
 
-            filtered_lines.append(line)
+        # =====================================================
+        # COMBINED OCR TEXT
+        # =====================================================
 
-    filtered_text = "\n".join(filtered_lines)
+        ocr_text = "\n".join(all_ocr_text)
 
-    print("\n==============================")
-    print("FILTERED ANSWER TEXT")
-    print("==============================")
-    print(filtered_text)
+        print("\n==============================")
+        print("RAW OCR TEXT")
+        print("==============================")
+        print(ocr_text)
 
-    # =====================================================
-    # SPELL CORRECTION
-    # =====================================================
+        # =====================================================
+        # QUESTION NUMBER DETECTION
+        # =====================================================
 
-    corrected_text = correct_spelling(
-        filtered_text
-    )
+        detected_questions = detect_question_numbers(
+            ocr_text
+        )
 
-    print("\n==============================")
-    print("SPELL CORRECTED TEXT")
-    print("==============================")
-    print(corrected_text)
+        print("\n==============================")
+        print("DETECTED QUESTION NUMBERS")
+        print("==============================")
+        print(detected_questions)
 
-    # =====================================================
-    # TEXT CLEANING
-    # =====================================================
+        # =====================================================
+        # FIND MISSING QUESTIONS
+        # =====================================================
 
-    cleaned_text = clean_text(
-        corrected_text
-    )
+        missing_questions = find_missing_questions(
+            detected_questions
+        )
 
-    print("\n==============================")
-    print("CLEANED TEXT")
-    print("==============================")
-    print(cleaned_text)
+        print("\n==============================")
+        print("MISSING QUESTIONS")
+        print("==============================")
 
-    # =====================================================
-    # AI ANSWER EVALUATION
-    # =====================================================
+        if missing_questions:
 
-    print("\n==============================")
-    print("AI ANSWER EVALUATION")
-    print("==============================")
+            print(missing_questions)
 
-    result = evaluate_answer(
-        cleaned_text
-    )
+        else:
 
-    # =====================================================
-    # SAVE JSON OUTPUT
-    # =====================================================
+            print("No Missing Questions")
 
-    save_output_json(
-        detected_questions,
-        missing_questions,
-        ocr_text,
-        filtered_text,
-        corrected_text,
-        cleaned_text,
-        result
-    )
+        # =====================================================
+        # INTELLIGENT ANSWER FILTERING
+        # =====================================================
 
-    # =====================================================
-    # FINAL OUTPUT
-    # =====================================================
+        filtered_lines = []
 
-    print("\n==============================")
-    print("FINAL OUTPUT")
-    print("==============================")
+        for line in ocr_text.split("\n"):
 
-    print(
-        f"Total Marks : {result['total_marks']}"
-    )
+            if (
+                is_meaningful_answer(line)
+                and not is_strike_text(line)
+            ):
 
-    print(
-        "\nAI Evaluation Pipeline Executed Successfully!"
-    )
+                filtered_lines.append(line)
+
+        filtered_text = "\n".join(filtered_lines)
+
+        print("\n==============================")
+        print("FILTERED ANSWER TEXT")
+        print("==============================")
+        print(filtered_text)
+
+        # =====================================================
+        # SPELL CORRECTION
+        # =====================================================
+
+        corrected_text = correct_spelling(
+            filtered_text
+        )
+
+        print("\n==============================")
+        print("SPELL CORRECTED TEXT")
+        print("==============================")
+        print(corrected_text)
+
+        # =====================================================
+        # TEXT CLEANING
+        # =====================================================
+
+        cleaned_text = clean_text(
+            corrected_text
+        )
+
+        print("\n==============================")
+        print("CLEANED TEXT")
+        print("==============================")
+        print(cleaned_text)
+
+        # =====================================================
+        # AI ANSWER EVALUATION
+        # =====================================================
+
+        print("\n==============================")
+        print("AI ANSWER EVALUATION")
+        print("==============================")
+
+        result = evaluate_answer(
+            cleaned_text
+        )
+
+        # =====================================================
+        # SAVE JSON OUTPUT
+        # =====================================================
+
+        save_output_json(
+            detected_questions,
+            missing_questions,
+            ocr_text,
+            filtered_text,
+            corrected_text,
+            cleaned_text,
+            result
+        )
+
+        # =====================================================
+        # FINAL OUTPUT
+        # =====================================================
+
+        print("\n==============================")
+        print("FINAL OUTPUT")
+        print("==============================")
+
+        print(
+            f"Total Marks : {result['total_marks']}"
+        )
+
+        print(
+            "\nAI Evaluation Pipeline Executed Successfully!"
+        )
+
+        return result
+
+    except Exception as error:
+
+        handle_exception(error)
+
+        return {
+            "error": str(error)
+        }
+
 
 # =========================================================
-# EXCEPTION HANDLING
+# MANUAL TESTING
 # =========================================================
 
-except Exception as error:
+if __name__ == "__main__":
 
-    handle_exception(error)
+    run_evaluation(
+        "student_answer.pdf"
+    )
