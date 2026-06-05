@@ -54,153 +54,78 @@
 
     <script>
 
-        let currentJobId = null;
+async function uploadFile() {
 
-        async function uploadFile() {
+    const file = document.getElementById("file").files[0];
+    const messageBox = document.getElementById("messageBox");
 
-            const file = document.getElementById("file").files[0];
-            const messageBox = document.getElementById("messageBox");
+    if (!file) {
 
-            if (!file) {
-                messageBox.innerHTML = `
-                    <div class="alert alert-warning">
-                        Please select a PDF file first.
-                    </div>
-                `;
-                return;
+        messageBox.innerHTML = `
+            <div class="alert alert-warning">
+                Please select a PDF file first.
+            </div>
+        `;
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    messageBox.innerHTML = `
+        <div class="alert alert-info">
+            AI Evaluation Started ⏳
+            <br>
+            Please wait...
+        </div>
+    `;
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:5000/upload",
+            {
+                method: "POST",
+                body: formData
             }
+        );
 
-            const formData = new FormData();
-            formData.append("file", file);
+        const data = await response.json();
 
-            try {
+        console.log(data);
 
-                // STEP 1
-                messageBox.innerHTML = `
-                    <div class="alert alert-success">
-                        PDF Uploaded Successfully ✅
-                    </div>
-                `;
+        if (!response.ok) {
 
-                // STEP 2
-                messageBox.innerHTML = `
-                    <div class="alert alert-info">
-                        Execution Started ⏳<br>
-                        Please wait while AI evaluates your answer sheet...
-                    </div>
-                `;
-
-                // STEP 3: send file → get job_id
-                const response = await fetch("http://127.0.0.1:5000/upload", {
-                    method: "POST",
-                    body: formData
-                });
-
-                const data = await response.json();
-                console.log(data);
-
-                if (!response.ok) {
-                    messageBox.innerHTML = `
-                        <div class="alert alert-danger">
-                            Upload Failed ❌
-                        </div>
-                    `;
-                    return;
-                }
-
-                currentJobId = data.job_id;
-
-                // STEP 4: start polling backend
-                pollStatus(currentJobId);
-
-            } catch (error) {
-
-                console.error(error);
-
-                messageBox.innerHTML = `
-                    <div class="alert alert-danger">
-                        Backend not responding ❌
-                    </div>
-                `;
-            }
+            messageBox.innerHTML = `
+                <div class="alert alert-danger">
+                    Upload Failed ❌
+                </div>
+            `;
+            return;
         }
 
-        // =========================================================
-        // POLLING FUNCTION (REAL-TIME STATUS CHECK)
-        // =========================================================
+        messageBox.innerHTML = `
+            <div class="alert alert-success">
+                <h5>Evaluation Completed ✅</h5>
+                <hr>
+                <strong>Total Marks:</strong> ${data.total_marks}
+            </div>
+        `;
 
-        async function pollStatus(jobId) {
+    }
+    catch (error) {
 
-            const messageBox = document.getElementById("messageBox");
+        console.error(error);
 
-            const interval = setInterval(async () => {
+        messageBox.innerHTML = `
+            <div class="alert alert-danger">
+                Backend Error ❌
+            </div>
+        `;
+    }
+}
 
-                try {
-
-                    const res = await fetch(`http://127.0.0.1:5000/status/${jobId}`);
-                    const data = await res.json();
-
-                    console.log(data);
-
-                    if (data.status === "processing") {
-
-                        messageBox.innerHTML = `
-                            <div class="alert alert-info">
-                                <strong>Processing ⏳</strong><br>
-                                AI is evaluating your answer sheet...
-                            </div>
-                        `;
-                    }
-
-                    if (data.status === "done") {
-
-                        clearInterval(interval);
-
-                        messageBox.innerHTML = `
-                            <div class="alert alert-success">
-                                <h5>Execution Completed ✅</h5>
-                                <hr>
-                                <strong>Total Marks:</strong> ${data.result.total_marks}
-                                <br><br>
-                                <button class="btn btn-primary" onclick="openResult()">
-                                    Open Result
-                                </button>
-                            </div>
-                        `;
-                    }
-
-                    if (data.status === "error") {
-
-                        clearInterval(interval);
-
-                        messageBox.innerHTML = `
-                            <div class="alert alert-danger">
-                                Execution Failed ❌
-                            </div>
-                        `;
-                    }
-
-                } catch (err) {
-
-                    console.error(err);
-
-                    clearInterval(interval);
-
-                    messageBox.innerHTML = `
-                        <div class="alert alert-danger">
-                            Error while checking status ❌
-                        </div>
-                    `;
-                }
-
-            }, 2000); // every 2 seconds
-        }
-
-        function openResult() {
-            window.location.href = "result.html";
-        }
-
-    </script>
+</script>
 
 </body>
 

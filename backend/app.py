@@ -53,32 +53,23 @@ def process_file(job_id, file_path):
 @app.route("/upload", methods=["POST"])
 def upload_file():
 
-    file = request.files["file"]
+    try:
 
-    file_path = f"uploads/{uuid.uuid4()}_{file.filename}"
-    file.save(file_path)
+        file = request.files["file"]
 
-    # create job id
-    job_id = str(uuid.uuid4())
+        file_path = f"uploads/{uuid.uuid4()}_{file.filename}"
 
-    # store initial status
-    jobs[job_id] = {
-        "status": "processing",
-        "file": file_path
-    }
+        file.save(file_path)
 
-    # start background thread
-    thread = threading.Thread(
-        target=process_file,
-        args=(job_id, file_path)
-    )
-    thread.start()
+        result = run_evaluation(file_path)
 
-    # IMPORTANT: return immediately
-    return jsonify({
-        "job_id": job_id,
-        "status": "started"
-    })
+        return jsonify(result)
+
+    except Exception as e:
+
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 
 # =========================================================
