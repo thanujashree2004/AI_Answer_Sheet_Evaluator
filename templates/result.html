@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Evaluation Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="card i chnshadow">
+
+        <div class="card-header">
+            <h3>Evaluation Result</h3>
+        </div>
+
+        <div class="card-body">
+
+            <div id="resultArea"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+const storedData = localStorage.getItem("evaluationResult");
+
+const resultArea = document.getElementById("resultArea");
+
+if (!storedData) {
+    resultArea.innerHTML = `
+        <div class="alert alert-warning">
+            No evaluation data found.<br>
+            Please upload a file first.
+        </div>
+    `;
+} else {
+
+    const result = JSON.parse(storedData);
+
+    resultArea.innerHTML = `
+        <h4>Total Marks: ${result.total_marks ?? "N/A"}</h4>
+        <hr>
+        <pre>${JSON.stringify(result, null, 4)}</pre>
+    `;
+}
+</script>
+
+</body>
+</html>

@@ -1,85 +1,18 @@
 {
-    "total_marks": 16.0,
-    "question_results": [
-        {
-            "question": "1",
-            "similarity": 1.0000001192092896,
-            "semantic_score": 70.00000834465027,
-            "keyword_score": 30.0,
-            "final_score": 100.00000834465027,
-            "marks": 2.0,
-            "max_marks": 2,
-            "evaluation": "Excellent Answer Match"
-        },
-        {
-            "question": "2",
-            "similarity": 0.7971969842910767,
-            "semantic_score": 55.803788900375366,
-            "keyword_score": 22.5,
-            "final_score": 78.30378890037537,
-            "marks": 1.6,
-            "max_marks": 2,
-            "evaluation": "Good Answer Match"
-        },
-        {
-            "question": "3",
-            "similarity": 0.889103889465332,
-            "semantic_score": 62.23727226257324,
-            "keyword_score": 18.0,
-            "final_score": 80.23727226257324,
-            "marks": 1.6,
-            "max_marks": 2,
-            "evaluation": "Good Answer Match"
-        },
-        {
-            "question": "4",
-            "similarity": 0.6929200291633606,
-            "semantic_score": 48.50440204143524,
-            "keyword_score": 13.846153846153847,
-            "final_score": 62.35055588758909,
-            "marks": 1.9,
-            "max_marks": 3,
-            "evaluation": "Partial Answer Match"
-        },
-        {
-            "question": "5",
-            "similarity": 0.8751621246337891,
-            "semantic_score": 61.261348724365234,
-            "keyword_score": 18.0,
-            "final_score": 79.26134872436523,
-            "marks": 2.4,
-            "max_marks": 3,
-            "evaluation": "Good Answer Match"
-        },
-        {
-            "question": "6",
-            "similarity": 0.8765613436698914,
-            "semantic_score": 61.359294056892395,
-            "keyword_score": 16.666666666666668,
-            "final_score": 78.02596072355907,
-            "marks": 2.3,
-            "max_marks": 3,
-            "evaluation": "Good Answer Match"
-        },
-        {
-            "question": "7",
-            "similarity": 0.7474462389945984,
-            "semantic_score": 52.32123672962189,
-            "keyword_score": 6.666666666666666,
-            "final_score": 58.98790339628855,
-            "marks": 1.8,
-            "max_marks": 3,
-            "evaluation": "Partial Answer Match"
-        },
-        {
-            "question": "8",
-            "similarity": 0.76951003074646,
-            "semantic_score": 53.8657021522522,
-            "keyword_score": 26.25,
-            "final_score": 80.1157021522522,
-            "marks": 2.4,
-            "max_marks": 3,
-            "evaluation": "Good Answer Match"
-        }
-    ]
+    "date": "2026-06-05 14:41:43.817436",
+    "detected_questions": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+    ],
+    "missing_questions": [],
+    "raw_ocr_text": "parta -2 x.6.\n\" The earth revolves around sun .\n2 . AT simulates human intelligence .\n3 . DBMS manages data .\nPART B-3X256\n4 . Machine Learning allows systems to earn\nfrom data automatically .\n5 . Cloud computing Provides online storage\nand internet services .\n6 . Neural Networks are Inspired by the\nhuman brain .\n7 . Data mining is the parts of disceasing .\n2 patterns .\n8 . Cyber security pilots systems , networks and\nprograms from digital attacks .",
+    "filtered_text": "\" The earth revolves around sun .\n2 . AT simulates human intelligence .\n3 . DBMS manages data .\n4 . Machine Learning allows systems to earn\nfrom data automatically .\n5 . Cloud computing Provides online storage\nand internet services .\n6 . Neural Networks are Inspired by the\nhuman brain .\n7 . Data mining is the parts of disceasing .\n8 . Cyber security pilots systems , networks and\nprograms from digital attacks .",
+    "corrected_text": "1. \" The earth revolves around the sun . 2. AT simulates human intelligence . 3. DBMS manages data . 4. Machine Learning allows systems to earn from data automatically . 5. Cloud computing Provides online storage and internet services . 6. Neural Networks are inspired by the human brain . 7. Data mining is the part of disceasing . 8. Cyber security pilots systems , networks and programs from digital attacks.",
+    "cleaned_text": "1. the earth revolves around the sun . 2. at simulates human intelligence . 3. dbms manages data . 4. machine learning allows systems to earn from data automatically . 5. cloud computing provides online storage and internet services . 6. neural networks are inspired by the human brain . 7. data mining is the part of disceasing . 8. cyber security pilots systems networks and programs from digital attacks.",
+    "total_marks": 16.0
 }

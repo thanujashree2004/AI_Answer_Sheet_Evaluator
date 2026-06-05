@@ -1,81 +1,111 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from backend.main import run_evaluation
-import json
-import threading
-import uuid
 import os
-
-app = Flask(__name__)
-
-# =========================================================
-# GLOBAL JOB STORE (simple in-memory tracker)
-# =========================================================
-
-jobs = {}
+import uuid
+import threading
 
 # =========================================================
-# HOME ROUTE
+# BASE DIRECTORY FIX (IMPORTANT)
+# =========================================================
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "templates")
+)
+
+# =========================================================
+# SETUP
 # =========================================================
 
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+jobs = {}  # in-memory job tracker
+
+
+# =========================================================
+# HOME PAGE
+# =========================================================
 @app.route("/")
 def home():
-    return "AI Answer Evaluator Backend Running"
+    return render_template("index.html")
 
 
 # =========================================================
-# BACKGROUND PROCESS FUNCTION
+# OPTIONAL: INDEX PAGE ROUTE (if you use index.html)
 # =========================================================
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
-def process_file(job_id, file_path):
 
-    try:
+@app.route("/how-it-works")
+def how_it_works():
+    return render_template("howitworks.html")
 
-        result = run_evaluation(file_path)
 
-        # store result
-        jobs[job_id]["status"] = "done"
-        jobs[job_id]["result"] = result
+@app.route("/file-upload")
+def file_upload():
+    return render_template("file_upload.html")
 
-        # also save to file (optional)
-        with open("evaluation_output.json", "w", encoding="utf-8") as f:
-            json.dump(result, f, indent=4)
 
-    except Exception as e:
-
-        jobs[job_id]["status"] = "error"
-        jobs[job_id]["error"] = str(e)
-
+@app.route("/result/<job_id>")
+def result(job_id):
+    return render_template("result.html", job_id=job_id)
 
 # =========================================================
-# UPLOAD ROUTE (FAST RESPONSE NOW)
+# UPLOAD ENDPOINT
 # =========================================================
-
 @app.route("/upload", methods=["POST"])
 def upload_file():
 
+    file = request.files.get("file")
+
+    if not file:
+        return jsonify({"error": "No file received"}), 400
+
+    job_id = str(uuid.uuid4())
+
+    file_path = os.path.join(UPLOAD_FOLDER, f"{job_id}_{file.filename}")
+    file.save(file_path)
+
+    jobs[job_id] = {
+        "status": "processing",
+        "result": None
+    }
+
+    thread = threading.Thread(
+        target=process_file,
+        args=(job_id, file_path)
+    )
+    thread.start()
+
+    return jsonify({
+        "job_id": job_id,
+        "status": "started"
+    })
+
+
+# =========================================================
+# BACKGROUND PROCESSING
+# =========================================================
+def process_file(job_id, file_path):
+
     try:
-
-        file = request.files["file"]
-
-        file_path = f"uploads/{uuid.uuid4()}_{file.filename}"
-
-        file.save(file_path)
-
         result = run_evaluation(file_path)
 
-        return jsonify(result)
+        jobs[job_id]["status"] = "done"
+        jobs[job_id]["result"] = result
 
     except Exception as e:
-
-        return jsonify({
-            "error": str(e)
-        }), 500
+        jobs[job_id]["status"] = "error"
+        jobs[job_id]["result"] = str(e)
 
 
 # =========================================================
-# STATUS CHECK ROUTE (FOR FRONTEND POLLING)
+# STATUS CHECK (POLLING)
 # =========================================================
-
 @app.route("/status/<job_id>", methods=["GET"])
 def get_status(job_id):
 
@@ -88,25 +118,7 @@ def get_status(job_id):
 
 
 # =========================================================
-# RESULTS ROUTE (optional direct file read)
+# RUN SERVER
 # =========================================================
-
-@app.route("/results", methods=["GET"])
-def get_results():
-
-    try:
-        with open("evaluation_output.json", "r", encoding="utf-8") as file:
-            data = json.load(file)
-
-        return jsonify(data)
-
-    except Exception as error:
-        return jsonify({"error": str(error)})
-
-
-# =========================================================
-# RUN FLASK
-# =========================================================
-
 if __name__ == "__main__":
     app.run(debug=True)
