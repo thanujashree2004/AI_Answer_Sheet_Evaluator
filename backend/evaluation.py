@@ -2,6 +2,7 @@ from sentence_transformers import SentenceTransformer, util
 from sklearn.feature_extraction.text import TfidfVectorizer
 import string
 import re
+import os
 
 
 # =========================================
@@ -179,36 +180,53 @@ def extract_mark_scheme(answer_key_text):
     return question_marks
 
 
-# =========================================
-# MAIN EVALUATION FUNCTION
-# =========================================
-
 def evaluate_answer(student_answer):
 
     # -------------------------------------
     # READ ANSWER KEY
     # -------------------------------------
 
+    BASE_DIR = os.path.dirname(
+        os.path.dirname(
+            os.path.abspath(__file__)
+        )
+    )
+
+    ANSWER_KEY_FOLDER = os.path.join(
+        BASE_DIR,
+        "answer_keys"
+    )
+
+    answer_key_files = os.listdir(
+        ANSWER_KEY_FOLDER
+    )
+
+    if not answer_key_files:
+
+        raise Exception(
+            "No answer key uploaded. Please upload an answer key first."
+        )
+
+    answer_key_path = os.path.join(
+        ANSWER_KEY_FOLDER,
+        answer_key_files[0]
+    )
+
     with open(
-        "answer_key.txt",
+        answer_key_path,
         "r",
         encoding="utf-8"
     ) as file:
 
         answer_key = file.read()
 
-
     # -------------------------------------
     # SPLIT ANSWERS
     # -------------------------------------
 
-    teacher_answers = split_answers(
-        answer_key
-    )
+    teacher_answers = split_answers(answer_key)
+    student_answers = split_answers(student_answer)
 
-    student_answers = split_answers(
-        student_answer
-    )
 
 
     # -------------------------------------

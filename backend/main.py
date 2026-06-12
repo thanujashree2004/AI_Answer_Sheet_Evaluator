@@ -12,7 +12,7 @@ from backend.clean_text import clean_text
 from backend.spell_correct import correct_spelling
 from backend.evaluation import evaluate_answer
 from backend.pdf_module import convert_pdf_to_images
-
+import os
 # =========================================================
 # UTILITY IMPORTS
 # =========================================================
@@ -54,8 +54,34 @@ def run_evaluation(pdf_path):
         # LOAD ANSWER KEY
         # =====================================================
 
+        BASE_DIR = os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__)
+            )
+        )
+
+        ANSWER_KEY_FOLDER = os.path.join(
+            BASE_DIR,
+            "answer_keys"
+        )
+
+        answer_key_files = os.listdir(
+            ANSWER_KEY_FOLDER
+        )
+
+        if not answer_key_files:
+
+            raise Exception(
+                "No answer key uploaded. Please upload an answer key first."
+            )
+
+        answer_key_path = os.path.join(
+            ANSWER_KEY_FOLDER,
+            answer_key_files[0]
+        )
+
         with open(
-            "answer_key.txt",
+            answer_key_path,
             "r",
             encoding="utf-8"
         ) as file:

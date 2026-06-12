@@ -25,17 +25,52 @@
 
                     <div class="card-body">
 
+                        <!-- ANSWER KEY SECTION -->
+
+                        <p class="text-center text-muted">
+                            Upload Answer Key (.txt)
+                        </p>
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Answer Key</label>
+                            <input
+                                type="file"
+                                id="answerKey"
+                                accept=".txt"
+                                class="form-control">
+                        </div>
+
+                        <div class="d-grid">
+                            <button
+                                class="btn btn-success"
+                                onclick="uploadAnswerKey()">
+                                Upload Answer Key
+                            </button>
+                        </div>
+
+                        <div id="answerKeyMessage" class="mt-3"></div>
+
+                        <hr class="my-4">
+
+                        <!-- STUDENT PDF SECTION -->
+
                         <p class="text-center text-muted">
                             Upload a PDF answer sheet for evaluation
                         </p>
 
                         <div class="mb-3">
                             <label class="form-label">Select PDF File</label>
-                            <input type="file" id="file" accept=".pdf" class="form-control">
+                            <input
+                                type="file"
+                                id="file"
+                                accept=".pdf"
+                                class="form-control">
                         </div>
 
                         <div class="d-grid">
-                            <button class="btn btn-primary btn-lg" onclick="uploadFile()">
+                            <button
+                                class="btn btn-primary btn-lg"
+                                onclick="uploadFile()">
                                 Upload PDF
                             </button>
                         </div>
@@ -53,6 +88,68 @@
     </div>
 
     <script>
+
+        // ANSWER KEY UPLOAD
+
+        async function uploadAnswerKey() {
+
+            const file =
+                document.getElementById("answerKey").files[0];
+
+            const messageBox =
+                document.getElementById("answerKeyMessage");
+
+            if (!file) {
+
+                messageBox.innerHTML = `
+                    <div class="alert alert-warning">
+                        Please select an answer key file.
+                    </div>
+                `;
+                return;
+            }
+
+            const formData = new FormData();
+
+            formData.append("answer_key", file);
+
+            messageBox.innerHTML = `
+                <div class="alert alert-info">
+                    Uploading Answer Key...
+                </div>
+            `;
+
+            try {
+
+                const response =
+                    await fetch("/upload-answer-key", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                const data = await response.json();
+
+                messageBox.innerHTML = `
+                    <div class="alert alert-success">
+                        ${data.message || "Answer key uploaded successfully ✅"}
+                    </div>
+                `;
+
+            }
+            catch (error) {
+
+                messageBox.innerHTML = `
+                    <div class="alert alert-danger">
+                        Failed to upload answer key ❌
+                    </div>
+                `;
+            }
+        }
+
+
+        // EXISTING PDF UPLOAD FUNCTION
+        // UNCHANGED
+
         async function uploadFile() {
 
             const file = document.getElementById("file").files[0];
@@ -67,7 +164,6 @@
 
             try {
 
-                // STEP 1: upload
                 const response = await fetch("/upload", {
                     method: "POST",
                     body: formData
@@ -78,7 +174,6 @@
 
                 messageBox.innerHTML = "Processing AI evaluation...";
 
-                // STEP 2: POLLING LOOP
                 const interval = setInterval(async () => {
 
                     const res = await fetch(`/status/${jobId}`);
@@ -91,19 +186,18 @@
                         window.location.href = `/result/${jobId}`;
 
                         messageBox.innerHTML = `
-                    <div class="alert alert-success">
-                        Evaluation Completed ✅
-                        <br><br>
-                        <button class="btn btn-primary" onclick="viewResult()">
-                            View Result
-                        </button>
-                    </div>
-                `;
+                            <div class="alert alert-success">
+                                Evaluation Completed ✅
+                            </div>
+                        `;
                     }
 
                     if (result.status === "error") {
+
                         clearInterval(interval);
-                        messageBox.innerHTML = "Error in evaluation ❌";
+
+                        messageBox.innerHTML =
+                            "Error in evaluation ❌";
                     }
 
                 }, 2000);
@@ -114,17 +208,18 @@
                 console.error("FULL ERROR:", error);
 
                 messageBox.innerHTML = `
-        <div class="alert alert-danger">
-            <strong>Backend Error ❌</strong><br>
-            ${error.message}
-        </div>
-    `;
+                    <div class="alert alert-danger">
+                        <strong>Backend Error ❌</strong><br>
+                        ${error.message}
+                    </div>
+                `;
             }
         }
 
         function viewResult() {
             window.location.href = "result.html";
         }
+
     </script>
 
 </body>

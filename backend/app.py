@@ -19,10 +19,11 @@ app = Flask(
 # =========================================================
 
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+ANSWER_KEY_FOLDER = os.path.join(BASE_DIR, "answer_keys")
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-jobs = {}  # in-memory job tracker
-
+os.makedirs(ANSWER_KEY_FOLDER, exist_ok=True)
+jobs={}
 
 # =========================================================
 # HOME PAGE
@@ -86,7 +87,41 @@ def upload_file():
         "status": "started"
     })
 
+# =========================================================
+# ANSWER KEY UPLOAD
+# =========================================================
+@app.route("/upload-answer-key", methods=["POST"])
+def upload_answer_key():
 
+    file = request.files.get("answer_key")
+
+    if not file:
+        return jsonify({
+            "error": "No answer key received"
+        }), 400
+
+    # Remove previous answer key
+    for existing_file in os.listdir(ANSWER_KEY_FOLDER):
+
+        file_path = os.path.join(
+            ANSWER_KEY_FOLDER,
+            existing_file
+        )
+
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
+    # Save new answer key
+    save_path = os.path.join(
+        ANSWER_KEY_FOLDER,
+        file.filename
+    )
+
+    file.save(save_path)
+
+    return jsonify({
+        "message": "Answer key uploaded successfully"
+    })
 # =========================================================
 # BACKGROUND PROCESSING
 # =========================================================
