@@ -28,20 +28,10 @@
 </div>
 
 <script>
-const raw = localStorage.getItem("evaluationResult");
+const jobId = "{{ job_id }}";
 const resultArea = document.getElementById("resultArea");
 
-if (!raw) {
-
-    resultArea.innerHTML = `
-        <div class="alert alert-warning text-center">
-            No evaluation result found
-        </div>
-    `;
-
-} else {
-
-    const data = JSON.parse(raw);
+function renderDone(data) {
 
     const results = data.question_results || [];
     const total = data.total_marks || 0;
@@ -90,9 +80,50 @@ if (!raw) {
             </table>
 
         </div>
-
     `;
 }
+
+function poll() {
+
+    fetch(`/status/${jobId}`)
+        .then(res => res.json())
+        .then(job => {
+
+            if (job.error) {
+                resultArea.innerHTML = `
+                    <div class="alert alert-danger text-center">
+                        Job not found — the server may have restarted.
+                        Please re-upload and try again.
+                    </div>
+                `;
+                return;
+            }
+
+            if (job.status === "processing") {
+                resultArea.innerHTML = `
+                    <div class="alert alert-info text-center">
+                        Still processing... checking again in 2s.
+                    </div>
+                `;
+                setTimeout(poll, 2000);
+                return;
+            }
+
+            if (job.status === "error") {
+                resultArea.innerHTML = `
+                    <div class="alert alert-danger text-center">
+                        Evaluation failed: ${job.result}
+                    </div>
+                `;
+                return;
+            }
+
+            // status === "done"
+            renderDone(job.result);
+        });
+}
+
+poll();
 </script>
 
 </body>

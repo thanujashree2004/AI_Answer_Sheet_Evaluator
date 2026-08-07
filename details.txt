@@ -1,0 +1,89 @@
+Hardware Requirements
+Minimum Requirements
+Processor: Intel Core i3 (10th Gen) or equivalent
+RAM: 8 GB
+Storage: 5 GB free disk space
+Operating System: Windows 10/11, Linux, or macOS
+Internet: Required only for initial package installation
+Recommended Requirements
+Processor: Intel Core i5/i7 or AMD Ryzen 5/7
+RAM: 16 GB or higher
+Storage: SSD with 10 GB free space
+GPU: NVIDIA GPU (optional, for faster OCR and NLP processing)
+Software Requirements
+Programming Language
+Python 3.10 or above
+Libraries Used
+EasyOCR – Handwritten text extraction
+Sentence Transformers – Semantic similarity scoring
+spaCy – Keyword extraction and NLP processing
+OpenCV – Image preprocessing
+NumPy – Numerical computations
+Pandas – Data handling
+Flask – Web application backend
+HTML, CSS, JavaScript – Frontend development
+Functional Requirements
+
+The system should:
+
+Upload answer sheet images.
+Extract handwritten text using OCR.
+Clean and preprocess extracted text.
+Extract keywords from the answer key.
+Compare student answers with answer keys.
+Calculate semantic similarity scores.
+Generate marks automatically.
+Display evaluation results to the user.
+Non-Functional Requirements
+User-friendly interface.
+Fast evaluation process.
+Accurate text extraction.
+Secure file handling.
+Scalable for multiple answer sheets.
+Limitations of Handwritten Text Extraction
+1. Handwriting Quality Dependency
+
+The OCR system performs best with neat handwriting. Poor, cursive, or highly stylized handwriting may reduce accuracy.
+
+2. Image Quality Issues
+
+Blurred images, shadows, low lighting, or skewed scans can affect text extraction.
+
+3. Mixed Language Problems
+
+The system may struggle when multiple languages are written in the same answer sheet.
+
+4. Special Symbols and Diagrams
+
+OCR cannot accurately understand:
+
+Mathematical equations
+Flowcharts
+Diagrams
+Complex symbols
+
+without additional specialized models.
+
+5. Strike-Through Text
+
+Crossed-out words may sometimes be detected as valid text despite preprocessing.
+
+6. Spelling Errors
+
+Excessive spelling mistakes can reduce semantic similarity scores even when the answer meaning is correct.
+
+7. Layout Variations
+
+Unusual answer sheet formats, overlapping text, or irregular spacing may impact extraction accuracy.
+
+8. Context Understanding Limitation
+
+The system measures semantic similarity but does not fully understand deep context like a human evaluator.
+
+Future Improvements
+Fine-tune OCR models on handwritten answer sheet datasets.
+Add support for mathematical expression recognition.
+Implement multilingual answer evaluation.
+Integrate deep-learning-based handwriting recognition models.
+Improve diagram and chart understanding.
+Support rubric-based scoring.

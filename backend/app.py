@@ -2,7 +2,9 @@ from flask import Flask, request, jsonify, render_template
 from backend.main import run_evaluation
 import os
 import uuid
+import json
 import threading
+from threading import Lock
 
 # =========================================================
 # BASE DIRECTORY FIX (IMPORTANT)
@@ -23,7 +25,38 @@ ANSWER_KEY_FOLDER = os.path.join(BASE_DIR, "answer_keys")
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(ANSWER_KEY_FOLDER, exist_ok=True)
-jobs={}
+
+# =========================================================
+# DISK-BACKED JOB STORE
+# (Previously an in-memory dict "jobs = {}" — that gets wiped
+# any time the Flask process restarts, which is what caused
+# "Invalid job id" after the debug reloader or a manual
+# restart. Persisting to a JSON file survives restarts.)
+# =========================================================
+JOBS_FILE = os.path.join(BASE_DIR, "jobs_store.json")
+jobs_lock = Lock()
+
+
+def load_jobs():
+    if os.path.exists(JOBS_FILE):
+        try:
+            with open(JOBS_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, OSError):
+            return {}
+    return {}
+
+
+def save_job(job_id, data):
+    with jobs_lock:
+        jobs = load_jobs()
+        jobs[job_id] = data
+        with open(JOBS_FILE, "w", encoding="utf-8") as f:
+            json.dump(jobs, f)
+
+
+def get_job(job_id):
+    return load_jobs().get(job_id)
 
 # =========================================================
 # HOME PAGE
@@ -71,10 +104,10 @@ def upload_file():
     file_path = os.path.join(UPLOAD_FOLDER, f"{job_id}_{file.filename}")
     file.save(file_path)
 
-    jobs[job_id] = {
+    save_job(job_id, {
         "status": "processing",
         "result": None
-    }
+    })
 
     thread = threading.Thread(
         target=process_file,
@@ -130,12 +163,16 @@ def process_file(job_id, file_path):
     try:
         result = run_evaluation(file_path)
 
-        jobs[job_id]["status"] = "done"
-        jobs[job_id]["result"] = result
+        save_job(job_id, {
+            "status": "done",
+            "result": result
+        })
 
     except Exception as e:
-        jobs[job_id]["status"] = "error"
-        jobs[job_id]["result"] = str(e)
+        save_job(job_id, {
+            "status": "error",
+            "result": str(e)
+        })
 
 
 # =========================================================
@@ -144,7 +181,7 @@ def process_file(job_id, file_path):
 @app.route("/status/<job_id>", methods=["GET"])
 def get_status(job_id):
 
-    job = jobs.get(job_id)
+    job = get_job(job_id)
 
     if not job:
         return jsonify({"error": "Invalid job id"}), 404
@@ -156,4 +193,8 @@ def get_status(job_id):
 # RUN SERVER
 # =========================================================
 if __name__ == "__main__":
-    app.run(debug=True)
+    # use_reloader=False: the reloader watches every file in the project,
+    # including images/segmented_lines/evaluation_output.json that the
+    # pipeline writes to mid-job — those writes were triggering restarts
+    # in the middle of an evaluation, wiping job state.
+    app.run(debug=True, use_reloader=False)

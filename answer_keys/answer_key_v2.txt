@@ -1,0 +1,13 @@
+PART A - 2 x 3 = 6
+
+1. A computer network connects multiple devices to share data and resources with each other.
+2. An operating system manages computer hardware and software resources and provides services for programs.
+3. A compiler translates source code written in a programming language into machine code.
+
+PART B - 3 x 5 = 15
+
+4. The internet is a global network of interconnected computers that communicate using standard protocols to share information worldwide.
+5. Cybersecurity involves protecting computer systems, networks, and data from unauthorized access, damage, or theft.
+6. A database management system organizes, stores, and retrieves data efficiently while maintaining data integrity and security.
+7. Cloud storage allows users to save data on remote servers accessed through the internet instead of local hard drives.
+8. Software testing is the process of evaluating a program to find bugs and ensure it meets the required specifications.

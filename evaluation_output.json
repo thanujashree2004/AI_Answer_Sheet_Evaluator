@@ -1,18 +1,12 @@
 {
-    "date": "2026-06-12 13:24:47.413805",
+    "date": "2026-08-07 07:37:13.528379",
     "detected_questions": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
+        2
     ],
     "missing_questions": [],
-    "raw_ocr_text": "parta -2 x.6.\n\" The earth revolves around sun .\n2 . AT simulates human intelligence .\n3 . DBMS manages data .\nPART B-3X256\n4 . Machine Learning allows systems to earn\nfrom data automatically .\n5 . Cloud computing Provides online storage\nand internet services .\n6 . Neural Networks are Inspired by the\nhuman brain .\n7 . Data mining is the parts of disceasing .\n2 patterns .\n8 . Cyber security pilots systems , networks and\nprograms from digital attacks .",
-    "filtered_text": "\" The earth revolves around sun .\n2 . AT simulates human intelligence .\n3 . DBMS manages data .\n4 . Machine Learning allows systems to earn\nfrom data automatically .\n5 . Cloud computing Provides online storage\nand internet services .\n6 . Neural Networks are Inspired by the\nhuman brain .\n7 . Data mining is the parts of disceasing .\n8 . Cyber security pilots systems , networks and\nprograms from digital attacks .",
-    "corrected_text": "1. \" The earth revolves around the sun . 2. AT simulates human intelligence . 3. DBMS manages data . 4. Machine Learning allows systems to earn from data automatically . 5. Cloud computing Provides online storage and internet services . 6. Neural Networks are inspired by the human brain . 7. Data mining is the part of disceasing . 8. Cyber security pilots systems , networks and programs from digital attacks.",
-    "cleaned_text": "1. the earth revolves around the sun . 2. at simulates human intelligence . 3. dbms manages data . 4. machine learning allows systems to earn from data automatically . 5. cloud computing provides online storage and internet services . 6. neural networks are inspired by the human brain . 7. data mining is the part of disceasing . 8. cyber security pilots systems networks and programs from digital attacks.",
-    "total_marks": 16.0
+    "raw_ocr_text": "# Answer Sheet - Page 1 ...\nparta-xx3-,\n# 1 . A computer network links devices ...\nto share data with each other .\n# 2 . An operating system manages\nto hardware and software resources .\n# 3 . A compiler converts code into\n# machine language .\npart B-3x5-15.\n2 4 . The internet is a global network ...\nof computers that share information\nsmoking common protocols .\n# Answer Sheet - Page 2 ...\n2 5 . Cybersecurity protects systems ...\nand data from unauthorized access .\n# 6 . A DBMS stores and manages data ...\nex efficiently and keeps it secure .\n2 . 7 . Cloud storage saves data on\nto remote servers over the internet .\n# 8 . Software testing finds bugs in #\nof a program before it is released .",
+    "filtered_text": "# 1 . A computer network links devices ...\nto share data with each other .\n# 2 . An operating system manages\nto hardware and software resources .\n# 3 . A compiler converts code into\n# machine language .\n2 4 . The internet is a global network ...\nof computers that share information\nsmoking common protocols .\n2 5 . Cybersecurity protects systems ...\nand data from unauthorized access .\n# 6 . A DBMS stores and manages data ...\nex efficiently and keeps it secure .\n2 . 7 . Cloud storage saves data on\nto remote servers over the internet .\n# 8 . Software testing finds bugs in #\nof a program before it is released .",
+    "corrected_text": "1. # 1. A computer network links devices ... to share data with each other . # 2. An operating system manages hardware and software resources . # 3. A compiler converts code into # machine language . 2 4. The internet is a global network ... of computers that share information smoking common protocols . 2 5. Cybersecurity protects systems ... and data from unauthorized access . # 6. A database stores and manages data efficiently and keeps it secure . 2.  3. 4. 5. 6. 7. Cloud storage saves data on to remote servers over the internet .",
+    "cleaned_text": "1. 1. a computer network links devices ... to share data with each other . 2. an operating system manages hardware and software resources . 3. a compiler converts code into machine language . 2 4. the internet is a global network ... of computers that share information smoking common protocols . 2 5. cybersecurity protects systems ... and data from unauthorized access . 6. a database stores and manages data efficiently and keeps it secure . 2. 3. 4. 5. 6. 7. cloud storage saves data on to remote servers over the internet .",
+    "total_marks": 4.4
 }
